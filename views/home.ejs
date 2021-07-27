@@ -1,0 +1,147 @@
+<%- include("./partials/header") %>
+
+    <div id="page-contents">
+    	<div class="container">
+    		<div class="row">
+
+    			<div class="col-md-3 static">
+            <div class="profile-card">
+              <% if(currentuser.image_url) { %>
+                <img src="<%= currentuser.image_url %>" alt="user" class="profile-photo" />
+                <% } else { %>
+                <img src="/images/dp.png" alt="user" class="profile-photo" />
+                <% } %>
+            	<h5><a href="/profile/<%= currentuser.id %>" class="text-white"><%= currentuser.username %> </a></h5>
+            	<a href="/profile/<%= currentuser.id %>/friends" class="text-white"><i class="fa fa-user-plus" aria-hidden="true"></i> <%= friend_count %> Friends</a>
+            </div>
+            <ul class="nav-news-feed">
+              <li><i class="fa fa-newspaper-o" aria-hidden="true"></i><div><a href="/">My Newsfeed</a></div></li>
+              <li><i class="fa fa-users" aria-hidden="true"></i><div><a href="/profile/<%= currentuser.id %>/friends">Friends</a></div></li>
+              <li><i class="fa fa-camera" aria-hidden="true"></i><div><a href="/profile/<%= currentuser.id %>/album">My Album</a></div></li>
+            </ul>
+          </div>
+    			<div class="col-md-7">
+
+            <div class="create-post">
+              <div class="row">
+                <div class="col-md-2 col-sm-2">
+                  <% if(currentuser.image_url) { %>
+                    <img src="<%= currentuser.image_url %>" alt="user" class="profile-photo" />
+                    <% } else { %>
+                    <img src="/images/dp.png" alt="user" class="profile-photo" />
+                    <% } %>
+                </div>
+                <div class="col-md-10 col-sm-10">
+                  <form action="/" method="POST">
+                    <div class="form-group">
+                       <textarea id="exampleTextarea" cols="120" style="margin-bottom: 5px  ;"rows="2" name="newspost" class="form-control" placeholder="Write what you wish"></textarea>
+                    </div>
+                    <div class=""form-group>
+                       <input type=" text" name="postImage" class="form-control"  style="margin-bottom: 5px  ;"placeholder="Enter post image">
+                    </div>
+                    <button class="btn btn-primary ">Post</button>
+                  </form>
+                  </div>
+              </div>
+            </div>
+
+
+            <% allposts.forEach(function(element) { %>
+            <div class="post-content">
+              <% if(element.post_image) { %>
+              <img src="<%= element.post_image %>" alt="post-image" class="img-responsive post-image" />
+              <% } else { %>
+              <img src="/images/no_image.jpg" alt="post-image" class="img-responsive post-image" />
+              <% } %>
+              <div class="post-container">
+                <% if(element.image_url) { %>
+                <img src="<%= element.image_url %>" alt="user" class="profile-photo-md pull-left" />
+                <% } else { %>
+                <img src="/images/dp.png" alt="user" class="profile-photo-md pull-left" />
+                <% } %>
+                <div class="post-detail">
+                  <div class="user-info">
+                    <h5><a href="/profile/<%= element.id %>" class="profile-link"><%= element.username %></a> </h5>
+                   <%  if(element.created) {  %>
+                    <p ><%= element.created.toDateString() %></p>
+                      <% } %>
+                  </div>
+                  <div class="reaction">
+                    <% if (currentuser != undefined && element.user_id == currentuser.id) { %>
+
+                        <a class="dropdown-item icon-styling" href="#" data-toggle="modal" data-target="#edit-post-<%= element.post_id %>"><span class="material-icons"  data-toggle="tooltip" data-placement="bottom" title="Edit">edit</span></a>
+                        <a class="dropdown-item icon-styling" href="/deletepost/<%= element.post_id %>"><span class="material-icons" data-toggle="tooltip" data-placement="bottom" title="Delete">delete</span></a>
+
+                    <% } %>
+                    <a class="dropdown-item icon-styling" href="#"><span class="material-icons" data-toggle="tooltip" data-placement="bottom" title="Like">thumb_up</span></a>
+                    <a class="dropdown-item icon-styling" href="#"><span class="material-icons" data-toggle="tooltip" data-placement="bottom" title="Comment">comment</span></a>
+                    <!-- <span class="material-icons">thumb_up</span> -->
+                    <!-- <a class="btn text-green"><i class="fa fa-thumbs-o-up" aria-hidden="true"></i> 13</a> -->
+                    <!-- <a class="btn text-red"><i class="fa fa-thumbs-down"></i> 0</a> -->
+                  </div>
+                  <div class="line-divider"></div>
+                  <div class="post-text">
+                    <p><%= element.post_string %></p>
+                  </div>
+
+                  <br><br>
+                  <a href="/posts/<%= element.post_id %>">Read More</a>
+                  <div class="line-divider"></div>
+                  <div class="post-comment">
+                    <img src="/images/users/user-11.jpg" alt="" class="profile-photo-sm" />
+                    <p><a href="timeline.html" class="profile-link">Diana </a><i class="em em-laughing"></i> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
+                  </div>
+                  <div class="post-comment">
+                    <img src="/images/users/user-4.jpg" alt="" class="profile-photo-sm" />
+                    <p><a href="timeline.html" class="profile-link">John</a> Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud </p>
+                  </div>
+                  <div class="post-comment">
+                    <% if(currentuser.image_url) { %>
+                      <img src="<%= currentuser.image_url %>" alt="" class="profile-photo-sm" />
+                    <% } else { %>
+                      <img src="/images/dp.png" alt="" class="profile-photo-sm" />
+                    <%  }  %>
+                      <input type="text" class="form-control" placeholder="Post a comment">
+                  </div>
+                </div>
+              </div>
+            </div>
+            <br>
+
+
+              <!-- Modal -->
+              <div class="modal fade" id="edit-post-<%= element.post_id %>" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h4 class="modal-title" id="exampleModalLabel" style="text-align: center">Edit post</h4>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <h1>Compose</h1>
+                      <form action="/editpost/<%= element.post_id %>" method="post">
+                        <div class="form-group">
+                          <textarea class="form-control" name="newspost" rows="3"><%= element.post_string %></textarea>
+                        </div>
+                        <div class="form-group">
+                          <input class="form-control" name="postImage" rows="3" value="<%= element.post_image %>">
+                        </div>
+
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                      <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+
+                    </form>
+                  </div>
+                </div>
+              </div>
+
+
+
+            <% }); %>
+
+<%- include("./partials/footer") %>
